@@ -1,0 +1,23 @@
+body{
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+header{
+    background-color:#006400
+}
+
+header nav ul{
+    height: 60px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+header nav ul a{
+    font-weight: bold;
+    background-color: #b9b9b9;
+    padding: 8px;
+    border-radius: 8px;
+}
+header nav ul a:hover{
+    background-color: #a2a2a2;
+}

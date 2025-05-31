@@ -1,0 +1,34 @@
+body{
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.main-menu-container{
+    background-color: #fff;
+    padding: 30px 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    max-width: 620px;
+    width: 100%;
+    margin: 200px auto;
+    display: flex;
+    justify-content: space-around;
+}
+
+.main-menu-container a,
+.main-menu-container a:visited {
+    color: white;
+    padding: 12px;
+    background-color: darkolivegreen;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    text-align: center;
+    text-decoration: none;
+}
+
+.main-menu-container a:hover {
+    background-color: olive;
+    color: white;
+}

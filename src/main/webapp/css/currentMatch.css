@@ -1,0 +1,100 @@
+body{
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.match-container {
+    background-color: #dddddd;
+    padding: 10px 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    max-width: 1400px;
+    width: 100%;
+    margin: 30px auto;
+}
+
+.match-container p{
+    color: #fff;
+    font-size: 40px;
+}
+
+.match-container h1{
+    font-size: 60px;
+    font-weight: bold;
+}
+
+.match-container h2{
+    font-size: 20px;
+    font-weight:500;
+    margin-bottom: 10px;
+}
+
+.score_btn input{
+    padding:20px 80px;
+    max-height: 62px;
+    margin-top: 76px;
+}
+
+input[type="submit"] {
+    background-color: darkolivegreen;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+input[type="submit"]:hover {
+    background-color: olive;
+}
+
+.row{
+    margin: 30px 6px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.players{
+    min-width: 400px;
+    max-width: 400px;
+}
+
+.player-box{
+    background-color:darkcyan;
+    padding: 50px 30px;
+    border: 10px white;
+    border-radius: 8px;
+}
+
+.point-box {
+    background-color: darkolivegreen;
+    width: 120px;
+    height: 154px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.set-boxes{
+    display: flex;
+    justify-content: space-around;
+}
+
+.set-box {
+    background-color: darkolivegreen;
+    width: 90px;
+    height: 154px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.set-box + .set-box{
+    margin-left: 10px;
+}
