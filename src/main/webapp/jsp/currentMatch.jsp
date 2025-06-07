@@ -11,15 +11,17 @@
 
 <div class="match-container">
     <h1>Match №</h1>
-    <form class="score_btn"  action="${pageContext.request.contextPath}/match-score?uuid=${param.uuid}" method="post">
+
+    <!-- Форма для игрока 1 -->
+    <form class="score_btn" action="${pageContext.request.contextPath}/match-score?uuid=${param.uuid}" method="post">
         <div class="row">
             <div class="prev-sets">
                 <h2>Previous sets</h2>
                 <div class="set-boxes">
-                    <div class="set-box"><p></p></div>
-                    <div class="set-box"><p></p></div>
-                    <div class="set-box"><p></p></div>
-                    <div class="set-box"><p></p></div>
+                    <div class="set-box"><p>${sessionScope.listOfWinners.get(sessionScope.player1).getSet()}</p></div>
+                    <div class="set-box"><p>${sessionScope.listOfWinners.get(sessionScope.player1).getSet()}</p></div>
+                    <div class="set-box"><p>${sessionScope.listOfWinners.get(sessionScope.player1).getSet()}</p></div>
+                    <div class="set-box"><p>${sessionScope.listOfWinners.get(sessionScope.player1).getSet()}</p></div>
                 </div>
             </div>
 
@@ -34,11 +36,11 @@
                 <h2>Sets</h2>
                 <div class="set-box">
                     <c:choose>
-                        <c:when test="${requestScope.set1 eq null}">
+                        <c:when test="${sessionScope.set1 eq null}">
                             <p>0</p>
                         </c:when>
                         <c:otherwise>
-                            <p>${requestScope.set1}</p>
+                            <p>${sessionScope.set1}</p>
                         </c:otherwise>
                     </c:choose>
                 </div>
@@ -48,30 +50,31 @@
                 <h2>Points</h2>
                 <div class="point-box">
                     <c:choose>
-                        <c:when test="${requestScope.point1 eq null}">
+                        <c:when test="${sessionScope.point1 eq null}">
                             <p>0</p>
                         </c:when>
                         <c:otherwise>
-                            <p>${requestScope.point1}</p>
+                            <p>${sessionScope.point1}</p>
                         </c:otherwise>
                     </c:choose>
                 </div>
             </div>
 
-            <input type="submit" name="command" value="Score for 1">
-
+            <input type="hidden" name="winner_id" value="${sessionScope.player1.id}" />
+            <input type="submit" value="Score for 1" />
         </div>
+    </form>
 
-        <!-- second row -->
-
+    <!-- Форма для игрока 2 -->
+    <form class="score_btn" action="${pageContext.request.contextPath}/match-score?uuid=${param.uuid}" method="post">
         <div class="row">
             <div class="prev-sets">
                 <h2>Previous sets</h2>
                 <div class="set-boxes">
-                    <div class="set-box"><p></p></div>
-                    <div class="set-box"><p></p></div>
-                    <div class="set-box"><p></p></div>
-                    <div class="set-box"><p></p></div>
+                    <div class="set-box"><p>${sessionScope.listOfWinners.get(sessionScope.player2).getSet()}</p></div>
+                    <div class="set-box"><p>${sessionScope.listOfWinners.get(sessionScope.player2).getSet()}</p></div>
+                    <div class="set-box"><p>${sessionScope.listOfWinners.get(sessionScope.player2).getSet()}</p></div>
+                    <div class="set-box"><p>${sessionScope.listOfWinners.get(sessionScope.player2).getSet()}</p></div>
                 </div>
             </div>
 
@@ -86,11 +89,11 @@
                 <h2>Sets</h2>
                 <div class="set-box">
                     <c:choose>
-                        <c:when test="${requestScope.set2 eq null}">
+                        <c:when test="${sessionScope.set2 eq null}">
                             <p>0</p>
                         </c:when>
                         <c:otherwise>
-                            <p>${requestScope.set2}</p>
+                            <p>${sessionScope.set2}</p>
                         </c:otherwise>
                     </c:choose>
                 </div>
@@ -100,20 +103,21 @@
                 <h2>Points</h2>
                 <div class="point-box">
                     <c:choose>
-                        <c:when test="${requestScope.point2 eq null}">
+                        <c:when test="${sessionScope.point2 eq null}">
                             <p>0</p>
                         </c:when>
                         <c:otherwise>
-                            <p>${requestScope.point2}</p>
+                            <p>${sessionScope.point2}</p>
                         </c:otherwise>
                     </c:choose>
                 </div>
             </div>
 
-            <input type="submit" name="command" value="Score for 2">
-
+            <input type="hidden" name="winner_id" value="${sessionScope.player2.id}" />
+            <input type="submit" value="Score for 2" />
         </div>
     </form>
 </div>
+
 </body>
 </html>

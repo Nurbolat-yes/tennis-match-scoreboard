@@ -2,6 +2,7 @@ package by.nurbolat.tennismatchscoreboard.servlet;
 
 import by.nurbolat.tennismatchscoreboard.dao.PlayerRepository;
 import by.nurbolat.tennismatchscoreboard.dto.CreatePlayerDto;
+import by.nurbolat.tennismatchscoreboard.entity.Match;
 import by.nurbolat.tennismatchscoreboard.entity.Player;
 import by.nurbolat.tennismatchscoreboard.game.CurrentMatch;
 import by.nurbolat.tennismatchscoreboard.game.MatchScoreModel;
@@ -16,6 +17,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.UUID;
 
 @WebServlet("/new-match")
@@ -47,9 +50,8 @@ public class NewMatchServlet extends HttpServlet {
         Player player1 = session.find(Player.class,player1Id);
         Player player2 = session.find(Player.class,player2Id);
 
-
         OngoingMatchesService ongoingMatchesService = OngoingMatchesService.getInstance();
-        UUID uuid = ongoingMatchesService.addMatch(new CurrentMatch(new MatchScoreModel(),player1,player2));
+        UUID uuid = ongoingMatchesService.addMatch(new CurrentMatch(player1,player2));
 
         resp.sendRedirect("/match-score?uuid="+uuid);
         session.getTransaction().commit();

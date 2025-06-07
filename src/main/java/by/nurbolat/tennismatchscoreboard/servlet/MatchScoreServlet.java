@@ -1,7 +1,7 @@
 package by.nurbolat.tennismatchscoreboard.servlet;
 
-import by.nurbolat.tennismatchscoreboard.game.CurrentMatch;
-import by.nurbolat.tennismatchscoreboard.game.MatchScoreModel;
+import by.nurbolat.tennismatchscoreboard.entity.Player;
+import by.nurbolat.tennismatchscoreboard.game.GameState;
 import by.nurbolat.tennismatchscoreboard.service.MatchScoreCalculationService;
 import by.nurbolat.tennismatchscoreboard.service.OngoingMatchesService;
 import by.nurbolat.tennismatchscoreboard.util.JspWrapper;
@@ -17,7 +17,6 @@ import java.util.UUID;
 @WebServlet("/match-score")
 public class MatchScoreServlet extends HttpServlet {
     private OngoingMatchesService ongoingMatchesService = OngoingMatchesService.getInstance();
-    private MatchScoreCalculationService matchScoreCalculationService = MatchScoreCalculationService.getInstance();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -25,8 +24,27 @@ public class MatchScoreServlet extends HttpServlet {
 
         var currentMatch = ongoingMatchesService.getCurrentMatchByUUID(UUID.fromString(uuid));
 
-        req.getSession().setAttribute("player1",currentMatch.getPlayer1());
-        req.getSession().setAttribute("player2",currentMatch.getPlayer2());
+        Player player1 = currentMatch.getPlayer1();
+        Player player2 = currentMatch.getPlayer2();
+
+        req.getSession().setAttribute("player1",player1);
+        req.getSession().setAttribute("player2",player2);
+
+
+        req.getSession().setAttribute("point1",currentMatch.getMatchScoreModelByPlayerId(player1.getId()).getPoint());
+        req.getSession().setAttribute("point2",currentMatch.getMatchScoreModelByPlayerId(player2.getId()).getPoint());
+
+        //when 40 == 40
+        if (currentMatch.getMatchScoreModelByPlayerId(player1.getId()).getExtraPoint() == 1)
+            req.getSession().setAttribute("point1","AD");
+        if (currentMatch.getMatchScoreModelByPlayerId(player2.getId()).getExtraPoint() == 1)
+            req.getSession().setAttribute("point2","AD");
+
+        req.getSession().setAttribute("set1",currentMatch.getMatchScoreModelByPlayerId(player1.getId()).getSet());
+        req.getSession().setAttribute("set2",currentMatch.getMatchScoreModelByPlayerId(player2.getId()).getSet());
+
+//        System.out.println(currentMatch.getMatchScoreModelByPlayerId(currentMatch.getPlayer1().getId()));
+//        System.out.println(currentMatch.getMatchScoreModelByPlayerId(currentMatch.getPlayer2().getId()));
 
         req.getRequestDispatcher(JspWrapper.toPath("currentMatch")).forward(req,resp);
     }
@@ -34,50 +52,74 @@ public class MatchScoreServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         UUID uuid = UUID.fromString(req.getParameter("uuid"));
-//        var currentMatch = ongoingMatchesService.getCurrentMatchByUUID(uuid);
-//        matchScoreCalculationService.checkWinner(uuid)
+        var currentMatch = ongoingMatchesService.getCurrentMatchByUUID(uuid);
 
-        String command = req.getParameter("command");
-        matchScoreCalculationService
+        var matchScoreCalculationService = new MatchScoreCalculationService(currentMatch,GameState.CURRENT_GAME);
 
-        if (command.equals("Score for 1")){
+        Integer scoreWinnerPlayerId = Integer.parseInt(req.getParameter("winner_id"));
 
+        System.out.println(scoreWinnerPlayerId);
 
-            int currentPoint = matchScoreCalculationService.getCurrentPoint(uuid,0);
-            int currentSet = matchScoreCalculationService.getCurrentSet(uuid,0);
+        Player player1 = currentMatch.getPlayer1();
+        Player player2 = currentMatch.getPlayer2();
 
-            if (currentPoint == 40){
+        GameState gameState = matchScoreCalculationService.getGameState(player1,player2);
 
-                currentSet = matchScoreCalculationService.incrementSet(uuid,0);
-                matchScoreCalculationService.dropPoint(uuid,0);
-                currentPoint = 0;
+        if (gameState.equals(GameState.EXTRA_POINT_GAME)) {
+            System.out.println(gameState);
+            gameState = matchScoreCalculationService.extraPointGame(player1,player2,scoreWinnerPlayerId);
 
-            } else if (currentPoint == 0 || currentPoint == 15) {
+            doGet(req,resp);
+//            req.getRequestDispatcher(JspWrapper.toPath("currentMatch")).forward(req,resp);
+        }
+        if (gameState.equals(GameState.EXTRA_SET_GAME)) {
+            System.out.println(gameState);
+            gameState = matchScoreCalculationService.extraSetGame(player1,player2,scoreWinnerPlayerId);
 
-                currentPoint = matchScoreCalculationService.add15Point(uuid,0);
+            doGet(req,resp);
+//            req.getRequestDispatcher(JspWrapper.toPath("currentMatch")).forward(req,resp);
+        }
+        if (gameState.equals(GameState.CURRENT_GAME)) {
+            System.out.println(gameState);
 
-            } else if (currentPoint == 30) {
+            gameState = matchScoreCalculationService.addScoreToWinner(player1,player2,scoreWinnerPlayerId);
 
-                currentPoint = matchScoreCalculationService.add10Point(uuid,0);
+            doGet(req,resp);
+//            req.getRequestDispatcher(JspWrapper.toPath("currentMatch")).forward(req,resp);
 
-            }
+        }
+        if (gameState.equals(GameState.FINISHED_GAME)){
+            System.out.println(gameState);
 
+            Player winnerPlayer = matchScoreCalculationService.checkWinnerGame(player1,player2);
 
-            req.setAttribute("point1",currentPoint);
-            req.setAttribute("set1",currentSet);
+            System.out.println(winnerPlayer);
+            System.out.println(player1.getName()+ " : "+ matchScoreCalculationService.getScoresByPlayerId(player1));
+            System.out.println(player2.getName()+ " : "+ matchScoreCalculationService.getScoresByPlayerId(player2));
 
+            req.getSession().setAttribute("listOfWinners",matchScoreCalculationService.getScoreResults());
 
-            System.out.println("Button 1");
-        } else if (command.equals("Score for 2")) {
-
-
-            System.out.println("Button 2");
-        } else {
-
-
-            System.out.println("Wrong request");
+            doGet(req,resp);
+            return;
         }
 
-        req.getRequestDispatcher(JspWrapper.toPath("currentMatch")).forward(req,resp);
+        showPlayersScore(player1,player2,matchScoreCalculationService);
+
+    }
+
+    public void showPlayersScore(Player player1,Player player2,MatchScoreCalculationService matchScoreCalculationService){
+        System.out.println("Player 1 : " + player1.getName() + " Set : "
+                + matchScoreCalculationService.getSetByPlayerId(player1.getId()) + " Point : "
+                + matchScoreCalculationService.getPointByPlayerId(player1.getId()) + " Extra Point : "
+                + matchScoreCalculationService.getExtraPointByPlayerId(player1.getId() )
+        );
+
+        System.out.println("Player 2 : " + player2.getName() + " Set : "
+                + matchScoreCalculationService.getSetByPlayerId(player2.getId()) + " Point : "
+                + matchScoreCalculationService.getPointByPlayerId(player2.getId()) + " Extra Point : "
+                + matchScoreCalculationService.getExtraPointByPlayerId(player2.getId() )
+        );
+
+        System.out.println();
     }
 }

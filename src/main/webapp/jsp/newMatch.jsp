@@ -12,12 +12,12 @@
         <div class="form-row">
             <div class="form-group">
                 <label for="player1">Player 1</label>
-                <input type="text" id="player1" name="player1">
+                <input type="text" id="player1" name="player1" value="M. Saken">
             </div>
 
             <div class="form-group">
                 <label for="player2">Player 2</label>
-                <input type="text" id="player2" name="player2">
+                <input type="text" id="player2" name="player2" value="M. Ali">
             </div>
         </div>
 

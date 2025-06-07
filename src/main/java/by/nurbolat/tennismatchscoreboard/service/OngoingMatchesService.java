@@ -2,7 +2,6 @@ package by.nurbolat.tennismatchscoreboard.service;
 
 import by.nurbolat.tennismatchscoreboard.game.CurrentMatch;
 import lombok.*;
-import org.eclipse.tags.shaded.org.apache.bcel.generic.INSTANCEOF;
 
 import java.util.HashMap;
 import java.util.Map;
